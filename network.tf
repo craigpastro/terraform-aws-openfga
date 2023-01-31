@@ -9,15 +9,6 @@ resource "aws_vpc" "this" {
   tags = local.tags
 }
 
-resource "aws_subnet" "private" {
-  count             = 3
-  cidr_block        = cidrsubnet(aws_vpc.this.cidr_block, 8, count.index + 1)
-  availability_zone = data.aws_availability_zones.this.names[count.index]
-  vpc_id            = aws_vpc.this.id
-
-  tags = local.tags
-}
-
 resource "aws_subnet" "public" {
   count             = 3
   cidr_block        = cidrsubnet(aws_vpc.this.cidr_block, 8, count.index + 101)
@@ -50,44 +41,6 @@ resource "aws_route_table_association" "public" {
 
   subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.public.id
-}
-
-// A NAT gateway allows apps in the private subnet to communicate with
-// the internet, but will prevent traffic into the private subnet.
-resource "aws_eip" "this" {
-  count = 3
-
-  depends_on = [aws_internet_gateway.this]
-  tags       = local.tags
-}
-
-
-resource "aws_nat_gateway" "this" {
-  count         = 3
-  subnet_id     = element(aws_subnet.public.*.id, count.index)
-  allocation_id = element(aws_eip.this.*.id, count.index)
-
-  depends_on = [aws_internet_gateway.this]
-  tags       = local.tags
-}
-
-resource "aws_route_table" "private" {
-  count  = 3
-  vpc_id = aws_vpc.this.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(aws_nat_gateway.this.*.id, count.index)
-  }
-
-  tags = local.tags
-}
-
-resource "aws_route_table_association" "private" {
-  count = 3
-
-  subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = element(aws_route_table.private.*.id, count.index)
 }
 
 resource "aws_security_group" "lb" {

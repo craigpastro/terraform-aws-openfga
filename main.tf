@@ -10,7 +10,7 @@ locals {
   port   = 8080
 
   service_count = 1
-  migrate = true
+  migrate       = true
 
   task_cpu    = 256
   task_memory = 512
