@@ -3,10 +3,12 @@ resource "aws_security_group" "ecs_task" {
   vpc_id = aws_vpc.this.id
 
   ingress {
-    protocol        = "tcp"
-    from_port       = local.port
-    to_port         = local.port
-    security_groups = [aws_security_group.lb.id]
+    protocol    = "tcp"
+    from_port   = local.port
+    to_port     = local.port
+    cidr_blocks = ["0.0.0.0/0"]
+
+    # security_groups = [aws_security_group.lb.id]
   }
 
   egress {
@@ -15,6 +17,8 @@ resource "aws_security_group" "ecs_task" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = local.tags
 }
 
 resource "aws_ecs_cluster" "this" {
