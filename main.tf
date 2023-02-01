@@ -15,12 +15,13 @@ locals {
   task_cpu    = 256
   task_memory = 512
 
-  db_type           = "postgres"    # memory
-  db_instance_class = "db.t3.micro" # db.m5.large
-  db_name           = "postgres"
-  db_username       = "postgres"
-  db_password       = "password"
-  db_conn_string    = "postgres://${local.db_username}:${local.db_password}@${aws_rds_cluster_instance.this.endpoint}/${local.db_name}"
+  db_name        = "postgres"
+  db_username    = "postgres"
+  db_password    = "password"
+  db_conn_string = "postgres://${local.db_username}:${local.db_password}@${aws_rds_cluster_instance.this.endpoint}/${local.db_name}"
+
+  db_min_capacity = 0.5
+  db_max_capacity = 1.0
 
   tags = {
     Name        = local.name
