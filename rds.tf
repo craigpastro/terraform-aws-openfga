@@ -13,14 +13,14 @@ resource "aws_security_group" "rds" {
     protocol    = "tcp"
     from_port   = 5432
     to_port     = 5432
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.this.cidr_block]
   }
 
   egress {
     protocol    = "tcp"
     from_port   = 5432
     to_port     = 5432
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.this.cidr_block]
   }
 
   tags = local.tags
@@ -38,6 +38,7 @@ resource "aws_db_instance" "this" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   publicly_accessible    = false
   skip_final_snapshot    = true
+  multi_az               = true
 
   storage_type      = "gp2"
   allocated_storage = 20
