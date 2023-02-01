@@ -26,22 +26,30 @@ resource "aws_security_group" "rds" {
   tags = local.tags
 }
 
-resource "aws_db_instance" "this" {
-  engine         = "postgres"
-  engine_version = "14.5"
-  instance_class = local.db_instance_class
-  db_name        = local.db_name
-  username       = local.db_username
-  password       = local.db_password
+resource "aws_rds_cluster" "this" {
+  cluster_identifier = "${local.name}-rds-cluster"
+  engine             = "aurora-postgresql"
+  engine_mode        = "provisioned"
+  engine_version     = "14.6"
+  database_name      = local.db_name
+  master_username    = local.db_username
+  master_password    = local.db_password
 
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.rds.id]
-  publicly_accessible    = false
   skip_final_snapshot    = true
-  multi_az               = true
 
-  storage_type      = "gp2"
-  allocated_storage = 20
+  serverlessv2_scaling_configuration {
+    max_capacity = 1.0
+    min_capacity = 0.5
+  }
 
   tags = local.tags
+}
+
+resource "aws_rds_cluster_instance" "this" {
+  cluster_identifier = aws_rds_cluster.this.id
+  instance_class     = "db.serverless"
+  engine             = aws_rds_cluster.this.engine
+  engine_version     = aws_rds_cluster.this.engine_version
 }

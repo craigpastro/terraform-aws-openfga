@@ -3,12 +3,10 @@ resource "aws_security_group" "ecs_task" {
   vpc_id = aws_vpc.this.id
 
   ingress {
-    protocol    = "tcp"
-    from_port   = local.port
-    to_port     = local.port
-    cidr_blocks = ["0.0.0.0/0"]
-
-    # security_groups = [aws_security_group.lb.id]
+    protocol        = "tcp"
+    from_port       = local.port
+    to_port         = local.port
+    security_groups = [aws_security_group.lb.id]
   }
 
   egress {
@@ -101,7 +99,7 @@ resource "aws_ecs_service" "run" {
 
   depends_on = [
     aws_lb_listener.this,
-    aws_db_instance.this,
+    aws_rds_cluster_instance.this,
     aws_iam_role.ecs_task_execution_role,
     aws_ecs_service.migrate,
   ]
@@ -160,7 +158,7 @@ resource "aws_ecs_service" "migrate" {
 
   depends_on = [
     aws_lb_listener.this,
-    aws_db_instance.this,
+    aws_rds_cluster_instance.this,
     aws_iam_role.ecs_task_execution_role,
   ]
 

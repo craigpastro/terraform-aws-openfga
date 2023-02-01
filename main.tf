@@ -20,7 +20,7 @@ locals {
   db_name           = "postgres"
   db_username       = "postgres"
   db_password       = "password"
-  db_conn_string    = "postgres://${local.db_username}:${local.db_password}@${aws_db_instance.this.endpoint}/${local.db_name}"
+  db_conn_string    = "postgres://${local.db_username}:${local.db_password}@${aws_rds_cluster_instance.this.endpoint}/${local.db_name}"
 
   tags = {
     Name        = local.name
