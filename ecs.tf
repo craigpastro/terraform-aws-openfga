@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "run" {
   container_definitions = jsonencode([
     {
       name        = local.name
-      image       = "openfga/openfga:latest"
+      image       = local.openfga_container_image
       command     = ["run"]
       networkMode = "awsvpc"
       essential   = true
@@ -120,7 +120,7 @@ resource "aws_ecs_task_definition" "migrate" {
   container_definitions = jsonencode([
     {
       name        = "${local.name}-migrate"
-      image       = "openfga/openfga:latest"
+      image       = local.openfga_container_image
       command     = ["migrate"]
       networkMode = "awsvpc"
       essential   = true
