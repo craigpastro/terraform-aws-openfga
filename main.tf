@@ -27,5 +27,8 @@ locals {
   db_min_capacity = 0.5
   db_max_capacity = 1.0
 
-  tags = merge({ Name = local.name }, var.additional_tags)
+  tags = merge({
+    Name      = local.name,
+    Terraform = "true",
+  }, var.additional_tags)
 }
