@@ -79,7 +79,7 @@ resource "aws_lb" "this" {
 resource "aws_lb_target_group" "this" {
   name        = "${local.name}-lb-tg"
   protocol    = "HTTP"
-  port        = local.port
+  port        = var.port
   target_type = "ip"
   vpc_id      = aws_vpc.this.id
 
