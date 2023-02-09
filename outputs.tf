@@ -1,5 +1,5 @@
-output "tags" {
-  value = local.tags
+output "name" {
+  value = local.name
 }
 
 output "endpoint" {

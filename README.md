@@ -8,4 +8,4 @@ This module with create a VPC with three public subnets. It will deploy OpenFGA 
 
 See [variables.tf](./variables.tf) for the list of input variables.
 
-The only output of this module is `endpoint`, which is the endpoint you can reach OpenFGA at.
+The outputs of this module are `name` and the `endpoint` of the load balancer to reach OpenFGA.
