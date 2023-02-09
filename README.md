@@ -9,3 +9,7 @@ This module with create a VPC with three public subnets. It will deploy OpenFGA 
 See [variables.tf](./variables.tf) for the list of input variables.
 
 The outputs of this module are `name` and the `endpoint` of the load balancer to reach OpenFGA.
+
+## Notes
+
+Keep a watch on https://github.com/hashicorp/terraform-provider-aws/issues/1703, and update the migrate portion if they ever do add an `aws_ecs_runtask`.
