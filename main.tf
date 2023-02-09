@@ -1,31 +1,16 @@
 provider "aws" {
-  region = local.region
+  region = var.region
 }
 
 resource "random_pet" "this" {}
 
 locals {
-  region = "us-west-2"
-  name   = "openfga-${random_pet.this.id}"
-  port   = 8080
+  name = "openfga-${random_pet.this.id}"
 
-  service_count = 1
-  migrate       = true
+  db_conn_string = var.db_type == "postgres" ? "postgres://${var.db_username}:${var.db_password}@${aws_rds_cluster_instance.this[0].endpoint}/${var.db_name}" : ""
 
-  task_cpu    = 256
-  task_memory = 512
-
-  db_name        = "postgres"
-  db_username    = "postgres"
-  db_password    = "password"
-  db_conn_string = "postgres://${local.db_username}:${local.db_password}@${aws_rds_cluster_instance.this.endpoint}/${local.db_name}"
-
-  db_min_capacity = 0.5
-  db_max_capacity = 1.0
-
-  tags = {
-    Name        = local.name
-    ManagedBy   = "Terraform"
-    Environment = "dev"
-  }
+  tags = merge({
+    Name      = local.name,
+    Terraform = "true",
+  }, var.additional_tags)
 }
